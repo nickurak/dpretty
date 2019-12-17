@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# git-rapply -- Apply a command across a range of git commits
+#
+# git-rapply will execute a given command on the files modified by a
+# range of git commits -- by default, all commits in your branch since
+# your tracking branch ("@{upstream}")
+#
+# The script will create one initial commit that applies the given
+# command to all the files your commit range modifies, followed by
+# recreated versions of each commit in the range, but with the command
+# applied.
+
+# Exit if anything goes wrong -- see below for error handler that
+# recovers the state.
+set -e
+
+# Record the last commit we want to make sure is represented in our
+# history.
+END="$(git log -1 --pretty=%H)"
+
+COMMAND=$1
+shift
+
+if ! [ -x "$(command -v "$COMMAND")" ]; then
+    echo "$COMMAND does not appear to be available -- install it before proceeding"
+    exit 1
+fi
+
+# Terminate early if there's any changes still to be commited -- those
+# changes are likely to be lost if we're re-writing git commit
+# history.
+if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
+    echo "Git tree is unclean -- commit or stash your changes before proceeding"
+    exit 2
+fi
+
+# In the event of a failure (either associated with the 'set -e'
+# setting above, or due to the script being terminated by Ctrl-C or
+# similar, restore the repository to the state we started in.
+recover() {
+    git reset --hard "$END"
+}
+trap "recover" SIGINT SIGTERM ERR
+
+# By default, operate on the commits produced since we diverged from
+# the tracking branch, but allow a different starting commit or range.
+RANGE="@{upstream}..$END"
+
+if [ -n "$1" ]; then
+    if echo "$1" | grep -E '[.][.].' &>/dev/null ; then
+        echo "Full range provided: \"$1\""
+        RANGE="$1"
+    elif echo "$1" | grep -E '[.][.]' &>/dev/null ; then
+        echo "Partial range provided"
+	      RANGE="${1}${END}"
+    else
+        echo "Starting point provided"
+        RANGE="$1..$END"
+    fi
+fi
+
+if [ -n "$(git log --merges "$RANGE")" ]; then
+    echo "Git range $RANGE includes merge commits, and therefore can't be automatically iterated over"
+    exit 1
+fi
+
+# Record the set of all files modified in this git range (including
+# files command -v change and then change back).
+get_touched_files() {
+    git log --pretty=%H "$RANGE" | while read -r SHA; do
+	      git diff-tree --no-commit-id --name-only -r "$SHA"
+    done | sort | uniq
+}
+FILES="$(get_touched_files)"
+
+# Move our git repository to just before the selected range.
+START="${RANGE/%..*}"
+git reset --hard "$START" > /dev/null
+
+
+# Appyly command to each modified file (if it exists)
+filterfiles() {
+    echo "$FILES" | while IFS='' read -r FILE; do
+	if [ -e "$FILE" ]; then
+	    echo "Stripping \"$FILE\""
+	    "$COMMAND" "$FILE"
+	fi
+    done
+}
+
+# Apply command to all modified files initially, so the subsequent
+# commits are simpler and cleaner
+echo "Performing initial filter operation"
+filterfiles
+git commit -a -F- <<EOCOMMITMESSAGE || true
+Strip output from below files, to make subsequent commits easier to read:
+
+$FILES
+EOCOMMITMESSAGE
+
+# Utility to reset the working tree contents to a selected sha, while
+# keeping the git repository pointed at the same commit. Done by a
+# hard-reset (to get the correct content) followed by a normal reset
+# (which restores the index/HEAD)
+reset_working_tree() {
+    local SHA=$1
+    HEAD="$(git log -1 --pretty=%H)"
+    git reset --hard "$SHA" > /dev/null
+    git reset "$HEAD" > /dev/null
+}
+
+# Iterate over all the commits in our range, in the order they are in
+# the commit tree
+git log --topo-order --reverse --pretty=%H "$RANGE" | while read -r SHA; do
+    echo "Recreating $SHA without output"
+
+    # Restore the content that was in this commit
+    reset_working_tree "$SHA"
+
+    # Apply command to all modified files. This restores the work done
+    # in the preceeding git history, as well as the work produced in
+    # the current SHA, leaving the git differences as just the new
+    # work in the current SHA, with the cleanup applied
+    filterfiles
+
+    # Create a new git commit with the metadata from the commit we're re-creating.
+    git commit -a -C"$SHA" > /dev/null
+done
+
+# At this point, we're finished. We can now as a sanity check verify
+# that we have all the content we started with, and flag a warning if
+# there is any missing content.
+
+reset_working_tree "$END"
+filterfiles
+if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
+    echo "Error: modified files are still present in the repository. This should not happen. Consider filing a bug."
+    echo "You can either choose to continue from this point (by commiting the modified files), or revert back to where you started by running:"
+    echo
+    echo "git reset --hard $END"
+else
+    echo "Finished successfully"
+fi
