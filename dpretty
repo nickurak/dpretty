@@ -5,6 +5,8 @@ DOCKER_IMAGE=dpretty
 
 USER_DIR="$(pwd)"
 
+DOCKER_OPTS="-v \"${USER_DIR}:/user_dir\" -it"
+
 SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
 
@@ -13,5 +15,6 @@ if ! ./hide-short-output.sh podman build . -t $DOCKER_IMAGE; then
     exit 1
 fi
 
-podman run -it -v "${USER_DIR}:/user_dir" $DOCKER_IMAGE "$@" \
+podman run $DOCKEROPTS $IMAGE "$@"
+
 #       bash /dpretty.sh -g /user_dir -r '${upstream}..'
