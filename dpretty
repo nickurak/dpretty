@@ -13,6 +13,7 @@ if [ -x "$(which podman)" ]; then
    ENGINE=podman
 elif [ -x "$(which docker)" ]; then
    ENGINE=docker
+   ENGINE_OPTS="-u $(id -u):$(id -g) $ENGINE_OPTS"
 else
    echo "Podman (recommended) or docker must be installed"
 fi
