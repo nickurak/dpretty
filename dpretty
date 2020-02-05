@@ -1,20 +1,27 @@
 #!/bin/bash
 
-#DOCKER_OPTS="-v techskills_keyring:/root/.local/share/python_keyring"
-DOCKER_IMAGE=dpretty
+IMAGE=dpretty
 
 USER_DIR="$(pwd)"
 
-DOCKER_OPTS="-v \"${USER_DIR}:/user_dir\" -it"
+ENGINE_OPTS="-v \"${USER_DIR}:/user_dir\" -it"
 
 SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
 
-if ! ./hide-short-output.sh podman build . -t $DOCKER_IMAGE; then
-    echo "'podman build -t .' failed"
+if [ -x "$(which podman)" ]; then
+   ENGINE=podman
+elif [ -x "$(which docker)" ]; then
+   ENGINE=docker
+else
+   echo "Podman (recommended) or docker must be installed"
+fi
+
+if ! ./hide-short-output.sh $ENGINE build . -t $IMAGE; then
+    echo "'$ENGINE build -t .' failed"
     exit 1
 fi
 
-podman run $DOCKEROPTS $IMAGE "$@"
+$ENGINE run $ENGINEOPTS $IMAGE "$@"
 
 #       bash /dpretty.sh -g /user_dir -r '${upstream}..'
