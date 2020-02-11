@@ -50,6 +50,10 @@ if [ -n "$GITDIR" ]; then
     if [ -z "$GITRANGE" ]; then
         GITRANGE="@{upstream}.."
     fi
+    if [ -n "$*" ]; then
+        echo "Additional parameters \"$*\" found, not allowed with -g/-r"
+        exit 1
+    fi
     echo "Applying to Git dir $GITDIR on range $GITRANGE"
     fix_range "$GITDIR" "$GITRANGE"
 else
