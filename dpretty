@@ -4,9 +4,13 @@ set -e
 
 IMAGE=dpretty
 
-USER_DIR="$(pwd)"
+if [ -d "$1" ]; then
+    USER_DIR="$(cd "$1"; pwd)"
+else
+    USER_DIR="$(pwd)"
+fi
 
-ENGINE_OPTS="-v \"${USER_DIR}:/user_dir\" -it"
+ENGINE_OPTS="-v ${USER_DIR}:/user_dir -it"
 
 SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
