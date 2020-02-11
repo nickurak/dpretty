@@ -30,7 +30,16 @@ fi
 # Terminate early if there's any changes still to be commited -- those
 # changes are likely to be lost if we're re-writing git commit
 # history.
-if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
+
+# Checks if git is clean or has uncommitted changes
+git_is_clean() {
+    if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
+        return 1
+    fi
+    return 0
+}
+
+if ! git_is_clean; then
     echo "Git tree is unclean -- commit or stash your changes before proceeding"
     exit 2
 fi
@@ -138,7 +147,7 @@ done
 
 reset_working_tree "$END"
 filterfiles
-if [ -n "$(git status --untracked-files=no --porcelain)" ]; then
+if ! git_is_clean; then
     echo "Error: modified files are still present in the repository. This should not happen. Consider filing a bug."
     echo "You can either choose to continue from this point (by commiting the modified files), or revert back to where you started by running:"
     echo
