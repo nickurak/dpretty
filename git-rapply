@@ -107,7 +107,7 @@ filterfiles() {
 echo "Performing initial filter operation"
 filterfiles
 git commit -a -F- <<EOCOMMITMESSAGE || true
-Strip output from below files, to make subsequent commits easier to read:
+Auto-applying changes on below files, to make subsequent commits easier to read:
 
 $FILES
 EOCOMMITMESSAGE
