@@ -81,10 +81,14 @@ git reset --hard "$START" > /dev/null
 
 # Appyly command to each modified file (if it exists)
 filterfiles() {
+    local SHA=$1
     echo "$FILES" | while IFS='' read -r FILE; do
 	if [ -e "$FILE" ]; then
-	    echo "Stripping \"$FILE\""
-	    "$COMMAND" "$FILE"
+      if [ -z "$SHA" ] || [ -n "$(git show $SHA "$FILE")" ]; then
+	        echo "Stripping \"$FILE\""
+	        "$COMMAND" "$FILE"
+          git add "$FILE"
+      fi
 	fi
     done
 }
@@ -122,10 +126,10 @@ git log --topo-order --reverse --pretty=%H "$RANGE" | while read -r SHA; do
     # in the preceeding git history, as well as the work produced in
     # the current SHA, leaving the git differences as just the new
     # work in the current SHA, with the cleanup applied
-    filterfiles
+    filterfiles "$SHA"
 
     # Create a new git commit with the metadata from the commit we're re-creating.
-    git commit -a -C"$SHA" > /dev/null
+    git commit -C"$SHA" > /dev/null || true
 done
 
 # At this point, we're finished. We can now as a sanity check verify
