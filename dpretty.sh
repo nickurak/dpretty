@@ -36,7 +36,7 @@ fix_file() {
             echo "Running black on $F"
             chronic black "$F"
             ;;
-        js | html | css | md | json | jsx )
+        js | html | css | md | jsx )
             echo "Running prettier on $F"
             chronic prettier --write "$F"
             ;;
