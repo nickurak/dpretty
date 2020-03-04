@@ -41,7 +41,7 @@ fix_file() {
             chronic prettier --write "$F"
             ;;
         *)
-            echo "Don't know how to strip $SUFFIX files like $F"
+            true
             ;;
     esac
 }
@@ -61,7 +61,6 @@ else
         echo "-r can't be used without -g" > /dev/stderr
         exit 1
     fi
-    echo "Applying file-by-file to $*"
     for F in "$@"; do
         fix_file "$F"
     done
