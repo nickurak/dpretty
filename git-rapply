@@ -48,6 +48,7 @@ fi
 # setting above, or due to the script being terminated by Ctrl-C or
 # similar, restore the repository to the state we started in.
 recover() {
+    echo "Something bad happened! Resetting back to $END"
     git reset --hard "$END"
 }
 trap "recover" SIGINT SIGTERM ERR
