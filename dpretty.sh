@@ -34,11 +34,11 @@ fix_file() {
     case "$SUFFIX" in
         py)
             echo "Running black on $F"
-            black "$F"
+            chronic black "$F"
             ;;
         js | html | css | md | json | jsx )
             echo "Running prettier on $F"
-            prettier --write "$F"
+            chronic prettier --write "$F"
             ;;
         *)
             echo "Don't know how to strip $SUFFIX files like $F"
