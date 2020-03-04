@@ -86,6 +86,14 @@ FILES="$(get_touched_files)"
 
 # Move our git repository to just before the selected range.
 START="${RANGE/%..*}"
+START="$(git log -1 --pretty=%H "$START")"
+
+mapfile -t COMMITS < <(git log --topo-order --reverse --pretty=%H "$RANGE")
+WORKTREE="$(mktemp -d)"
+git worktree add "$WORKTREE"
+pushd "$WORKTREE"
+TMPBRANCH=$(git rev-parse --abbrev-ref HEAD)
+
 git reset --hard "$START" > /dev/null
 
 
@@ -126,7 +134,7 @@ reset_working_tree() {
 
 # Iterate over all the commits in our range, in the order they are in
 # the commit tree
-git log --topo-order --reverse --pretty=%H "$RANGE" | while read -r SHA; do
+for SHA in "${COMMITS[@]}"; do
     echo "Recreating $SHA without output"
 
     # Restore the content that was in this commit
@@ -148,11 +156,32 @@ done
 
 reset_working_tree "$END"
 filterfiles
+
+DONESHA="$(git log -1 --pretty=%H)"
+
+cleanup_worktree() {
+    git worktree remove --force "$WORKTREE"
+    git branch -D "$TMPBRANCH"
+}
+
 if ! git_is_clean; then
+    git add -f -A .
+    git commit -m "Missing changes"
+    MISSINGSHA="$(git log -1 --pretty=%H)"
     echo "Error: modified files are still present in the repository. This should not happen. Consider filing a bug."
-    echo "You can either choose to continue from this point (by commiting the modified files), or revert back to where you started by running:"
     echo
-    echo "git reset --hard $END"
+    echo "You can either adopt the filtered files without those extra changes  by running:"
+    echo
+    echo "  git reset --hard $DONESHA"
+    echo
+    echo "Or, adopt the filtered files *WITH* the extra changes, by running:"
+    echo
+    echo "  git reset --hard $MISSINGSHA"
+    echo
+    cleanup_worktree
 else
+    popd
+    git reset --hard "$DONESHA"
+    cleanup_worktree
     echo "Finished successfully"
 fi
