@@ -101,13 +101,10 @@ git reset --hard "$START" > /dev/null
 filterfiles() {
     local SHA=$1
     echo "$FILES" | while IFS='' read -r FILE; do
-	if [ -e "$FILE" ]; then
-      if [ -z "$SHA" ] || [ -n "$(git show $SHA "$FILE")" ]; then
-	        echo "Stripping \"$FILE\""
-	        "$COMMAND" "$FILE"
-          git add "$FILE"
-      fi
-	fi
+	      if [ -e "$FILE" ]; then
+	          echo "Filtering \"$FILE\""
+	          "$COMMAND" "$FILE"
+	      fi
     done
 }
 
@@ -115,7 +112,8 @@ filterfiles() {
 # commits are simpler and cleaner
 echo "Performing initial filter operation"
 filterfiles
-git commit -a -F- <<EOCOMMITMESSAGE || true
+git add -A -f .
+git commit -F- <<EOCOMMITMESSAGE || true
 Auto-applying changes on below files, to make subsequent commits easier to read:
 
 $FILES
@@ -147,6 +145,7 @@ for SHA in "${COMMITS[@]}"; do
     filterfiles "$SHA"
 
     # Create a new git commit with the metadata from the commit we're re-creating.
+    git add -f -A .
     git commit -C"$SHA" > /dev/null || true
 done
 
