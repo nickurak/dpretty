@@ -76,7 +76,7 @@ if [ -n "$(git log --merges "$RANGE")" ]; then
 fi
 
 # Record the set of all files modified in this git range (including
-# files command -v change and then change back).
+# files the filter changes and then changes back).
 get_touched_files() {
     git log --pretty=%H "$RANGE" | while read -r SHA; do
         git diff-tree --no-commit-id --name-only -r "$SHA"
