@@ -102,6 +102,11 @@ filterfiles() {
     local SHA=$1
     echo "$FILES" | while IFS='' read -r FILE; do
         if [ -e "$FILE" ]; then
+            if [ -n "$SHA" ] && [ -z "$(git show "$SHA" "$FILE")" ]; then
+                # Not modified, no point filtering it
+                git checkout "$FILE" &> /dev/null
+                continue
+            fi
             echo "Filtering \"$FILE\""
             "$COMMAND" "$FILE"
         fi
