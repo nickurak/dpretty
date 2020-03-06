@@ -86,7 +86,8 @@ FILES="$(get_touched_files)"
 
 # Move our git repository to just before the selected range.
 START="${RANGE/%..*}"
-START="$(git log -1 --pretty=%H "$START")"
+END="${RANGE/#*..}"
+START="$(git merge-base -a ${START} ${END})"
 
 mapfile -t COMMITS < <(git log --topo-order --reverse --pretty=%H "$RANGE")
 WORKTREE="$(mktemp -d)"
