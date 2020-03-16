@@ -71,7 +71,8 @@ if [ -n "$1" ]; then
 fi
 
 if [ -n "$(git log --merges "$RANGE")" ]; then
-    echo "Git range $RANGE includes merge commits, and therefore can't be automatically iterated over"
+    echo "Git range $RANGE includes merge commits, and therefore can't be automatically iterated over."
+    echo "Consider rebasing your changes to not require merges, and re-run."
     exit 1
 fi
 
