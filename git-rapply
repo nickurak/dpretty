@@ -121,7 +121,7 @@ echo "Performing initial filter operation"
 filterfiles
 git add -A -f .
 git commit -F- <<EOCOMMITMESSAGE || true
-Auto-applying changes on below files, to make subsequent commits easier to read:
+Auto-applying ${COMMAND} to these files first, to make subsequent commits easier to read:
 
 $(git diff --cached  --name-only)
 EOCOMMITMESSAGE
