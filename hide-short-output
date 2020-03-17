@@ -11,6 +11,11 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM EXIT
 
+if [ "$1" = "-t" ]; then
+    TIMEOUT="$2"
+    shift; shift;
+fi
+
 monitor_for_exit() {
     local FLAGFILE=$1; shift
     local OUTFILE=$1; shift
