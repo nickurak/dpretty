@@ -4,10 +4,10 @@ set -e
 TIMEOUT=2 # Default maximum time to run subprocess without showing its output
 FLAGFILE="$(mktemp)" # If present, indicates the process hasn't exited yet.
 OUTFILE="$(mktemp)" # Buffered output from the process
+EXITCODE="$(mktemp)"
 
 cleanup() {
-    rm -f "$FLAGFILE"
-    rm -f "$OUTFILE"
+    rm -f "$FLAGFILE" "$OUTFILE" "$EXITCODE"
 }
 trap cleanup SIGINT SIGTERM EXIT
 
@@ -19,7 +19,8 @@ fi
 monitor_for_exit() {
     local FLAGFILE=$1; shift
     local OUTFILE=$1; shift
-    "$@" &> "$OUTFILE" || true
+    echo 0 > "$EXITCODE"
+    "$@" &> "$OUTFILE" || echo $? > "$EXITCODE"
     rm -f "$FLAGFILE"
 }
 
@@ -35,4 +36,8 @@ if [ -e "$FLAGFILE" ]; then
     while [ -e "$FLAGFILE" ]; do sleep 0.25; done
 fi
 
-rm -f "$OUTFILE"
+RC=$(cat "$EXITCODE")
+[ "$RC" -ne 0 ] && cat $OUTFILE
+
+cleanup
+exit "$RC"
