@@ -14,6 +14,7 @@ ENGINE_OPTS=("-v" "${USER_DIR}:/user_dir" "-it")
 
 SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
+PATH=".:$PATH"
 
 if [ -x "$(command -v podman)" ]; then
     ENGINE=podman
@@ -24,7 +25,7 @@ else
     echo "Podman (recommended) or docker must be installed"
 fi
 
-if ! ./hide-short-output.sh $ENGINE build . -t $IMAGE; then
+if ! hide-short-output $ENGINE build . -t $IMAGE; then
     echo "'$ENGINE build -t .' failed"
     exit 1
 fi
