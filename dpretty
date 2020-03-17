@@ -12,7 +12,9 @@ fi
 
 SELINUXOPT=""
 [ -x "$(which getenforce)" ] && [ "$(getenforce)" = "Enforcing" ] && SELINUXOPT=":z"
-ENGINE_OPTS=("-v" "${USER_DIR}:/user_dir${SELINUXOPT}" "-it")
+ENGINE_OPTS=("-v" "${USER_DIR}:/user_dir${SELINUXOPT}" "-i")
+
+tty &>/dev/null && ENGINE_OPTS+=('-t')
 
 SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
