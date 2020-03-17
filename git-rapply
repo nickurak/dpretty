@@ -123,7 +123,7 @@ git add -A -f .
 git commit -F- <<EOCOMMITMESSAGE || true
 Auto-applying changes on below files, to make subsequent commits easier to read:
 
-$FILES
+$(git diff --cached  --name-only)
 EOCOMMITMESSAGE
 
 # Utility to reset the working tree contents to a selected sha, while
