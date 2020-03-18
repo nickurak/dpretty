@@ -32,10 +32,31 @@ fix_range() {
     popd
 }
 
+guess_suffix() {
+    HEAD="$(head -n 1 "$1")"
+    if ! echo "$HEAD" | grep '^#!' &>/dev/null; then
+        return 0
+    fi
+    HEAD="$(echo "$HEAD" | sed 's%^#!/usr/bin/env %%')"
+    HEAD="$(echo "$HEAD" | sed 's%^#!.*/%%')"
+    case "$HEAD" in
+        bash | sh)
+            echo sh
+            ;;
+        python*)
+            echo py
+            ;;
+    esac
+}
+
 fix_file() {
     local F=$1; shift
     BASE="$(basename "$F")"
-    SUFFIX="${BASE/#*./}"
+    if echo "$BASE" | grep -F . &>/dev/null; then
+        SUFFIX="${BASE/#*./}"
+    else
+        SUFFIX=$(guess_suffix "$F")
+    fi
     case "$SUFFIX" in
         sh)
             echo "Running beartysh on $F"
