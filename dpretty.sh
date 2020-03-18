@@ -37,6 +37,10 @@ fix_file() {
     BASE="$(basename "$F")"
     SUFFIX="${BASE/#*./}"
     case "$SUFFIX" in
+        sh)
+            echo "Running beartysh on $F"
+            beautysh "$F"
+            ;;
         py)
             echo "Running black on $F"
             chronic black "$F"
