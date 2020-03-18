@@ -63,7 +63,7 @@ if [ -n "$1" ]; then
         RANGE="$1"
     elif echo "$1" | grep -E '[.][.]' &>/dev/null ; then
         echo "Partial range provided"
-	      RANGE="${1}${END}"
+        RANGE="${1}${END}"
     else
         echo "Starting point provided"
         RANGE="$1..$END"
@@ -79,7 +79,7 @@ fi
 # files command -v change and then change back).
 get_touched_files() {
     git log --pretty=%H "$RANGE" | while read -r SHA; do
-	      git diff-tree --no-commit-id --name-only -r "$SHA"
+        git diff-tree --no-commit-id --name-only -r "$SHA"
     done | sort | uniq
 }
 FILES="$(get_touched_files)"
@@ -101,10 +101,10 @@ git reset --hard "$START" > /dev/null
 filterfiles() {
     local SHA=$1
     echo "$FILES" | while IFS='' read -r FILE; do
-	      if [ -e "$FILE" ]; then
-	          echo "Filtering \"$FILE\""
-	          "$COMMAND" "$FILE"
-	      fi
+        if [ -e "$FILE" ]; then
+            echo "Filtering \"$FILE\""
+            "$COMMAND" "$FILE"
+        fi
     done
 }
 

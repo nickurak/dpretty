@@ -16,12 +16,12 @@ SCRIPTDIR="$(dirname "$(readlink -fn "$0")")"
 cd "$SCRIPTDIR"
 
 if [ -x "$(which podman)" ]; then
-   ENGINE=podman
+    ENGINE=podman
 elif [ -x "$(which docker)" ]; then
-   ENGINE=docker
-   ENGINE_OPTS="-u $(id -u):$(id -g) $ENGINE_OPTS"
+    ENGINE=docker
+    ENGINE_OPTS="-u $(id -u):$(id -g) $ENGINE_OPTS"
 else
-   echo "Podman (recommended) or docker must be installed"
+    echo "Podman (recommended) or docker must be installed"
 fi
 
 if ! ./hide-short-output.sh $ENGINE build . -t $IMAGE; then

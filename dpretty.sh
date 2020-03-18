@@ -6,15 +6,15 @@ set -e
 
 while getopts :g:r: OPT; do
     case $OPT in
-      g)
-          GITDIR="$OPTARG"
-        ;;
-      r)
-          GITRANGE=$OPTARG
-        ;;
-      *)
-          echo "Invalid option: $OPTARG" >/dev/stderr
-          exit 1
+        g)
+            GITDIR="$OPTARG"
+            ;;
+        r)
+            GITRANGE=$OPTARG
+            ;;
+        *)
+            echo "Invalid option: $OPTARG" >/dev/stderr
+            exit 1
     esac
 done
 shift "$(expr "$OPTIND" - 1 )"
