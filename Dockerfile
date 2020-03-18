@@ -5,6 +5,7 @@ RUN apk add moreutils
 
 RUN yarn global add prettier
 RUN pip3 install black
+RUN pip3 install beautysh
 
 ADD git-rapply /usr/local/bin/
 ADD dpretty.sh /usr/local/bin/
