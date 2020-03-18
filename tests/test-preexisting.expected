@@ -1,0 +1,55 @@
+commit 1cd833a1cee356b9c2e5d2a8d74d0a1c393b0dff
+Author: Dpretty tests <dpretty-tests@nonexistant.invalid>
+Date:   Wed Mar 18 09:56:35 2020 -0600
+
+    init
+
+commit a0a6d272b3c7778796f8b7bbb91db9156c3ce0eb
+Author: Jeremy Nickurak <jeremy@nickurak.ca>
+Date:   Tue Mar 17 13:13:08 2020 -0600
+
+    file.py
+
+diff --git a/file.py b/file.py
+new file mode 100644
+index 0000000..4e8dd71
+--- /dev/null
++++ b/file.py
+@@ -0,0 +1,2 @@
++def func():
++       print("too much indent")
+
+commit bf63c847f8daa43cb5d6c8cee169db06c3117c0d
+Author: Dpretty Formatter <dpretty-formatter@nonexistant.invalid>
+Date:   Wed Mar 18 15:56:37 2020 +0000
+
+    Auto-applying /usr/local/bin/dpretty.sh to these files first, to make subsequent commits easier to read:
+    
+    file.py
+
+diff --git a/file.py b/file.py
+index 4e8dd71..207af59 100644
+--- a/file.py
++++ b/file.py
+@@ -1,2 +1,2 @@
+ def func():
+-       print("too much indent")
++    print("too much indent")
+
+commit 4925498c50d3d6093fc985af266c314a2f55cc58
+Author: Jeremy Nickurak <jeremy@nickurak.ca>
+Date:   Tue Mar 17 13:15:43 2020 -0600
+
+    another poor commit
+
+diff --git a/file.py b/file.py
+index 207af59..8a95f33 100644
+--- a/file.py
++++ b/file.py
+@@ -1,2 +1,6 @@
+ def func():
+     print("too much indent")
++
++
++def func2():
++    print("another poorly indented func")
