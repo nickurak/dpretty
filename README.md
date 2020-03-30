@@ -36,9 +36,9 @@ $ <path-to-dpretty-checkout>/dpretty -r origin/master..HEAD
 
 # Details
 
-Dpretty seeks to solve this by recreating a range of git commits, as if you'd never made a formatting mistake!
+Dpretty seeks to solve the above challenges by recreating a range of git commits, as if you'd never made a formatting mistake!
 
-It does in two steps:
+It does this in two steps:
 
 1. Examining what files are changed in that range, and automatically reformatting the files, so they're fine _before_ your changes start
 2. Recreating each commit in your range on top of it, applying the reformatting rules to each as it goes.
@@ -46,6 +46,8 @@ It does in two steps:
 Dpretty is a wrapper around an included tool called git-rapply, which performs that logic of applying a change to a range of commits. It was originally designed to remove the output from Jupyter cells commit-by-commit before code gets incorporated into a shared repository. In that case, it was common to see a huge amount of data show up it output cells, only for someone to eventually delete them in a later commit, meaning the incorrect bloated commits still remained in the repository.
 
 Likewise, workflows that introduce formatting issues, only to remove them in a later commit, mean the formatting issues remain in your history.
+
+In either case, commits having a mixture of functional and non-functional changes makes them harder to understand, and harder to review.
 
 Dpretty relies on other code-formatting tools to do its job. Right now it's rigged to use the `black` formatter for python code, and the `prettier` formatter for various web-facing files (HTML, JS, JSX/React, Markdown JSON). It's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
 
