@@ -5,7 +5,8 @@ Clean up your commits!
 This tool is designed to resolve the conflicts between some conflicting goals:
 
 1. A clean git history is one of the best ways to make your code readable, understandable, and reviewable.
-   - Therefore, each commit should do one thing and one thing only
+   - Therefore, each commit should do one thing and one thing only.
+   - _One of the best places to start improving your git commits is with good messages -- [Chris Beams has some great advice](https://chris.beams.io/posts/git-commit/). Making an effort to have good messages will encourage you to have commits that have clearly defined purposes too!_
 2. Automatic code formatting also improves the readability of you changes, but:
    - When your editor automatically formats your code, your commits generally are a combination of your functional changes, and the non-functional formatting changes
 
@@ -14,6 +15,8 @@ This tool is designed to resolve the conflicts between some conflicting goals:
 Dpretty is extremely experimental. No guarantees are provided. If it breaks, you get to keep all the pieces. It does work reasonably hard to protect your changes in the event of a failure -- but don't be surprised if that fails. `git reflog <branch>` can also be really helpful in recovering all sorts of problems, related to dpretty or not.
 
 As with all things software, have a backup strategy for things you care about.
+
+That said, the author is using it regularly, and loving it.
 
 # Requirements
 
