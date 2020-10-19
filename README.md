@@ -34,7 +34,7 @@ Use it:
 
 ```
 $ cd ~/src/<my-project-git-repo>
-$ <path-to-dpretty-checkout>/dpretty -r origin/master..HEAD
+$ <path-to-dpretty-checkout>/dpretty -r origin/main..HEAD
 ```
 
 # Details
