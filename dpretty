@@ -12,7 +12,7 @@ fi
 
 SELINUXOPT=""
 [ -x "$(which getenforce)" ] && [ "$(getenforce)" = "Enforcing" ] && SELINUXOPT=":z"
-ENGINE_OPTS=("-v" "${USER_DIR}:/user_dir${SELINUXOPT}" "-i")
+ENGINE_OPTS=("--rm" "-v" "${USER_DIR}:/user_dir${SELINUXOPT}" "-i")
 
 tty &>/dev/null && ENGINE_OPTS+=('-t')
 
