@@ -53,7 +53,13 @@ guess_suffix() {
 }
 
 fix_file() {
-    local F=$1; shift
+    local F="$1"; shift
+    if [ -d "$F" ]; then
+        git ls-files "$F" | while IFS='' read F; do
+            fix_file "$F"
+        done
+      return
+    fi
     BASE="$(basename "$F")"
     if echo "$BASE" | grep -F . &>/dev/null; then
         SUFFIX="${BASE/#*./}"
