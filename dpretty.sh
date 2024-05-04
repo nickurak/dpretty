@@ -85,6 +85,10 @@ fix_file() {
     esac
 }
 
+if [ -z "$GITDIR" ] && [ -z "$*" ]; then
+    GITDIR=$(pwd)
+fi
+
 if [ -n "$GITDIR" ]; then
     if [ -z "$GITRANGE" ]; then
         GITRANGE="@{upstream}.."

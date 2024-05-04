@@ -34,4 +34,4 @@ if ! hide-short-output $ENGINE build . -t $IMAGE; then
     exit 1
 fi
 
-"$ENGINE" run "${ENGINE_OPTS[@]}" "$IMAGE" dpretty.sh -g /user_dir "$@"
+"$ENGINE" run "${ENGINE_OPTS[@]}" "$IMAGE" dpretty.sh "$@"
