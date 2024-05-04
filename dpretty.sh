@@ -68,7 +68,7 @@ fix_file() {
     fi
     case "$SUFFIX" in
         sh)
-            echo "Running beartysh on $F"
+            echo "Running beautysh on $F"
             beautysh "$F"
             ;;
         py)
