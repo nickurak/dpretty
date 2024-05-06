@@ -22,6 +22,8 @@ END="$(git log -1 --pretty=%H)"
 COMMAND=$1
 shift
 
+[ -z "$GIT_RAPPLY_TEMP_LABEL" ] && GIT_RAPPLY_TEMP_LABEL=git-rapply
+
 if ! [ -x "$(command -v "$COMMAND")" ]; then
     echo "$COMMAND does not appear to be available -- install it before proceeding"
     exit 1
@@ -91,7 +93,7 @@ END="${RANGE/#*..}"
 START="$(git merge-base -a ${START} ${END})"
 
 mapfile -t COMMITS < <(git log --topo-order --reverse --pretty=%H "$RANGE")
-WORKTREE="$(mktemp -d)"
+WORKTREE="$(mktemp -d -t "$GIT_RAPPLY_TEMP_LABEL-tmp-XXXXX")"
 git worktree add "$WORKTREE"
 pushd "$WORKTREE"
 TMPBRANCH=$(git rev-parse --abbrev-ref HEAD)
