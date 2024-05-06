@@ -31,7 +31,6 @@ fix_range() {
     local GITDIR="$1"; shift
     local GITRANGE="$1"; shift
     pushd "$GITDIR" &>/dev/null
-    export GIT_RAPPLY_TEMP_LABEL="dpretty"
     git-rapply "$SCRIPT" "$GITRANGE"
     popd
 }
