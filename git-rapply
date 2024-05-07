@@ -139,6 +139,17 @@ reset_working_tree() {
     git reset "$HEAD" > /dev/null
 }
 
+get_parents() {
+    local SHA="$1"; shift
+    git show -s --pretty=%P "$SHA"
+}
+
+get_patch() {
+    local SHA="$1"; shift
+    git format-patch -1 "$SHA" --stdout | tail -n +2
+}
+
+
 # Iterate over all the commits in our range, in the order they are in
 # the commit tree
 for SHA in "${COMMITS[@]}"; do
@@ -156,6 +167,12 @@ for SHA in "${COMMITS[@]}"; do
     # Create a new git commit with the metadata from the commit we're re-creating.
     git add -f -A .
     git commit -C"$SHA" > /dev/null || true
+    if [ "$(get_patch $SHA)" = "$(get_patch HEAD)" ]; then
+        if [ "$(get_parents $SHA)" = "$(get_parents HEAD)" ]; then
+            echo "Commit \"$SHA\" required no changes, and its parent(s) matched, no need to recreate at all."
+            git reset "$SHA"
+        fi
+    fi
 done
 
 # At this point, we're finished. We can now as a sanity check verify
