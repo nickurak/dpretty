@@ -1,6 +1,14 @@
 #!/bin/bash
 
 SCRIPT="$(readlink -fn "$0")"
+BASESCRIPT="$(basename "$SCRIPT")"
+
+if [ "$(command -v "$BASESCRIPT")" != "$SCRIPT" ]; then
+    echo "\"$BASESCRIPT\" does not resolve to \"$SCRIPT\", exiting"
+    exit 1
+fi
+
+SCRIPT="$BASESCRIPT"
 
 set -e
 
