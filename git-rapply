@@ -188,8 +188,8 @@ if ! git_is_clean; then
     echo
     cleanup_worktree
 else
-    popd
-    git reset --hard "$DONESHA"
+    popd &>/dev/null
+    git reset --hard "$DONESHA" &> /dev/null
     cleanup_worktree
     echo "Finished successfully"
 fi
