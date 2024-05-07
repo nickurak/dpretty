@@ -23,7 +23,7 @@ commit bf63c847f8daa43cb5d6c8cee169db06c3117c0d
 Author: Dpretty Formatter <dpretty-formatter@nonexistant.invalid>
 Date:   Wed Mar 18 15:56:37 2020 +0000
 
-    Auto-applying /usr/local/bin/dpretty.sh to these files first, to make subsequent commits easier to read:
+    Auto-applying dpretty.sh to these files first, to make subsequent commits easier to read:
     
     file.py
 
