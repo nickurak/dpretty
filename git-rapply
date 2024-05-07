@@ -112,7 +112,7 @@ filterfiles() {
                 continue
             fi
             echo "Filtering \"$FILE\" with $COMMAND"
-            "$COMMAND" "$FILE"
+            "$COMMAND" "$FILE" | sed 's/^/> /'
         fi
     done
 }
@@ -120,7 +120,7 @@ filterfiles() {
 # Apply command to all modified files initially, so the subsequent
 # commits are simpler and cleaner
 echo "Performing initial filter operation"
-filterfiles
+filterfiles | sed 's/^/> /'
 
 if ! git_is_clean; then
     git add -A -f .
@@ -167,7 +167,7 @@ for SHA in "${COMMITS[@]}"; do
     # in the preceeding git history, as well as the work produced in
     # the current SHA, leaving the git differences as just the new
     # work in the current SHA, with the cleanup applied
-    filterfiles "$SHA"
+    filterfiles "$SHA" | sed 's/^/> /'
 
     # Create a new git commit with the metadata from the commit we're re-creating.
     git add -f -A .
