@@ -41,7 +41,7 @@ fix_range() {
     pushd "$GITDIR" &>/dev/null
     export GIT_RAPPLY_TEMP_LABEL="dpretty"
     git-rapply "$SCRIPT" "$GITRANGE"
-    popd
+    popd &> /dev/null
 }
 
 guess_suffix() {

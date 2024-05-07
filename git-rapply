@@ -94,8 +94,8 @@ START="$(git merge-base -a ${START} ${END})"
 
 mapfile -t COMMITS < <(git log --topo-order --reverse --pretty=%H "$RANGE")
 WORKTREE="$(mktemp -d -t "$GIT_RAPPLY_TEMP_LABEL-tmp-XXXXX")"
-git worktree add "$WORKTREE"
-pushd "$WORKTREE"
+git worktree add "$WORKTREE" &> /dev/null
+pushd "$WORKTREE" &>/dev/null
 TMPBRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 git reset --hard "$START" > /dev/null
@@ -168,8 +168,8 @@ filterfiles
 DONESHA="$(git log -1 --pretty=%H)"
 
 cleanup_worktree() {
-    git worktree remove --force "$WORKTREE"
-    git branch -D "$TMPBRANCH"
+    git worktree remove --force "$WORKTREE" &> /dev/null
+    git branch -D "$TMPBRANCH" &> /dev/null
 }
 
 if ! git_is_clean; then
