@@ -64,7 +64,7 @@ if [ -n "$1" ]; then
         echo "Full range provided: \"$1\""
         RANGE="$1"
     elif echo "$1" | grep -E '[.][.]' &>/dev/null ; then
-        echo "Partial range provided"
+        echo "Partial range provided: \"$1\""
         RANGE="${1}${END}"
     else
         echo "Starting point provided"
@@ -111,7 +111,7 @@ filterfiles() {
                 git checkout "$FILE" &> /dev/null
                 continue
             fi
-            echo "Filtering \"$FILE\""
+            echo "Filtering \"$FILE\" with $COMMAND"
             "$COMMAND" "$FILE"
         fi
     done
@@ -142,7 +142,7 @@ reset_working_tree() {
 # Iterate over all the commits in our range, in the order they are in
 # the commit tree
 for SHA in "${COMMITS[@]}"; do
-    echo "Recreating $SHA without output"
+    echo "Recreating $SHA:"
 
     # Restore the content that was in this commit
     reset_working_tree "$SHA"
