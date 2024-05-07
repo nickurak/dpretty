@@ -212,6 +212,10 @@ if ! git_is_clean; then
 else
     popd &>/dev/null
     git reset --hard "$DONESHA" &> /dev/null
+    if [ "$DONESHA" = "$END" ]; then
+        echo "No changes made!"
+    else
+        echo "Changes were made -- old version is still available (temporarily!) in git commit \"$END\""
+    fi
     cleanup_worktree
-    echo "Finished successfully"
 fi
