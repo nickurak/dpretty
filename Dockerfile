@@ -10,5 +10,5 @@ ADD git-rapply /usr/local/bin/
 ADD dpretty.sh /usr/local/bin/
 RUN chmod a+x /usr/local/bin/dpretty.sh
 
-RUN mkdir /user_dir
-WORKDIR /user_dir
+RUN mkdir /input_src
+WORKDIR /input_src
