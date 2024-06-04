@@ -1,33 +1,41 @@
 #!/bin/bash
 
 set -e
-TIMEOUT=2 # Default maximum time to run subprocess without showing its output
-FLAGFILE="$(mktemp)" # If present, indicates the process hasn't exited yet.
-OUTFILE="$(mktemp)" # Buffered output from the process
-EXITCODE="$(mktemp)"
+TIMEOUT=2
+FLAGFILE=$(mktemp -p /tmp hso-flagfile-XXXX)
+OUTFILE=$(mktemp -p /tmp hso-outfile-XXXX)
 
 cleanup() {
-    rm -f "$FLAGFILE" "$OUTFILE" "$EXITCODE"
+    rm -f "$FLAGFILE"
+    rm -f "$OUTFILE"
 }
 trap cleanup SIGINT SIGTERM EXIT
 
-if [ "$1" = "-t" ]; then
-    TIMEOUT="$2"
-    shift; shift;
-fi
+while getopts :t: OPT; do
+    case $OPT in
+        t)
+            TIMEOUT="$OPTARG"
+            ;;
+        *)
+            echo "Invalid option: -$OPTARG"
+            exit 1
+            ;;
+    esac
+done
+shift $(expr $OPTIND - 1 )
 
 monitor_for_exit() {
-    local FLAGFILE=$1; shift
-    local OUTFILE=$1; shift
-    echo 0 > "$EXITCODE"
-    "$@" &> "$OUTFILE" || echo $? > "$EXITCODE"
+    local FLAGFILE="$1"; shift
+    local OUTFILE="$1"; shift
+
+    "$@" &> "$OUTFILE" || true
     rm -f "$FLAGFILE"
 }
 
-monitor_for_exit "$FLAGFILE" "$OUTFILE" "$@" &
+monitor_for_exit "$FLAGFILE" "$OUTFILE" "$@" &>/dev/null &
 
-ENDTIME=$(($(date +%s) + TIMEOUT))
-while [ -e "$FLAGFILE" ] && [ "$(date +%s)" -lt "$ENDTIME" ]; do
+ENDTIME=$[$(date +%s) + $TIMEOUT]
+while [ -e $FLAGFILE -a $(date +%s) -lt $ENDTIME ]; do
     sleep 0.25
 done
 
@@ -36,8 +44,4 @@ if [ -e "$FLAGFILE" ]; then
     while [ -e "$FLAGFILE" ]; do sleep 0.25; done
 fi
 
-RC=$(cat "$EXITCODE")
-[ "$RC" -ne 0 ] && cat $OUTFILE
-
-cleanup
-exit "$RC"
+rm -f "$OUTFILE"
