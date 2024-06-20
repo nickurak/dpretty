@@ -52,4 +52,4 @@ if [ -e "$FLAGFILE" ] || [ "$RC" -ne 0 ]; then
     while [ -e "$FLAGFILE" ]; do sleep 0.25; done
 fi
 
-rm -f "$OUTFILE"
+cleanup
