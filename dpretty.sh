@@ -20,13 +20,31 @@ export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 unset GITDIR
 unset GITRANGE
 
-while getopts :g:r: OPT; do
+help() {
+    cat <<EOH
+Usage:
+
+-r <range>:     Operate on the given range of git commits.
+                Defaults to @{upstream}..
+
+-g <directory>: Operate on the specified directory of git code.
+                Defaults to the current working directory
+
+-h:             Displays this help message
+EOH
+}
+
+while getopts :g:r:h OPT; do
     case $OPT in
         g)
             GITDIR="$OPTARG"
             ;;
         r)
             GITRANGE=$OPTARG
+            ;;
+        h)
+            help
+            exit
             ;;
         *)
             echo "Invalid option: $OPTARG" >/dev/stderr
