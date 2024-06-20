@@ -4,10 +4,12 @@ set -e
 TIMEOUT=2
 FLAGFILE=$(mktemp -p /tmp hso-flagfile-XXXX)
 OUTFILE=$(mktemp -p /tmp hso-outfile-XXXX)
+RCFILE=$(mktemp -p /tmp hso-rcfile-XXXX)
 
 cleanup() {
     rm -f "$FLAGFILE"
     rm -f "$OUTFILE"
+    rm -f "$RCFILE"
 }
 trap cleanup SIGINT SIGTERM EXIT
 
@@ -28,7 +30,11 @@ monitor_for_exit() {
     local FLAGFILE="$1"; shift
     local OUTFILE="$1"; shift
 
-    "$@" &> "$OUTFILE" || true
+    if "$@" &> "$OUTFILE"; then
+        echo "0" > "$RCFILE"
+    else
+        echo "$?" > "$RCFILE"
+    fi
     rm -f "$FLAGFILE"
 }
 
@@ -39,7 +45,9 @@ while [ -e $FLAGFILE -a $(date +%s) -lt $ENDTIME ]; do
     sleep 0.25
 done
 
-if [ -e "$FLAGFILE" ]; then
+RC=$(cat "$RCFILE")
+
+if [ -e "$FLAGFILE" ] || [ "$RC" -ne 0 ]; then
     tail -n +1 -f "$OUTFILE" &
     while [ -e "$FLAGFILE" ]; do sleep 0.25; done
 fi
