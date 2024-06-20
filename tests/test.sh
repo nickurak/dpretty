@@ -47,8 +47,8 @@ run_test() {
     git log --reverse -p --topo-order > "$INPUT-log"
     "${SCRIPTDIR}/../dpretty" -r "$FIRST_COMMIT.." >>"$LOG" 2>&1
     git log --reverse -p --topo-order > "$OUTPUT"
-    local BLURSED='/^(commit |Date: )/d'
-    if ! diff -u <(sed -E "$BLURSED" "$OUTPUT") <(sed -E "$BLURSED" "$EXPECTED") > "$DIFF"; then
+    local BLURRED='/^(commit |Date: )/d'
+    if ! diff -u <(sed -E "$BLURRED" "$OUTPUT") <(sed -E "$BLURRED" "$EXPECTED") > "$DIFF"; then
         echo "Test $1 failed, difference:"
         cat "$DIFF"
         fail "Test $1 failed"
