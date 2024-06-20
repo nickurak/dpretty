@@ -32,7 +32,7 @@ monitor_for_exit() {
     rm -f "$FLAGFILE"
 }
 
-monitor_for_exit "$FLAGFILE" "$OUTFILE" "$@" &>/dev/null &
+monitor_for_exit "$FLAGFILE" "$OUTFILE" "$@" &
 
 ENDTIME=$[$(date +%s) + $TIMEOUT]
 while [ -e $FLAGFILE -a $(date +%s) -lt $ENDTIME ]; do
