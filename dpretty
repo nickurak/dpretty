@@ -29,7 +29,7 @@ else
     echo "Podman (recommended) or docker must be installed"
 fi
 
-if ! hide-short-output $ENGINE build . -t $IMAGE; then
+if ! hide-short-output -t 4 $ENGINE build . -t $IMAGE; then
     echo "'$ENGINE build -t .' failed"
     exit 1
 fi
