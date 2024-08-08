@@ -99,15 +99,15 @@ fix_file() {
     case "$SUFFIX" in
         sh)
             echo "Running beautysh on $F"
-            chronic beautysh "$F"
+            chronic beautysh "$F" || echo "beautysh $F failed"
             ;;
         py)
             echo "Running black on $F"
-            chronic black "$F"
+            chronic black "$F" || echo "black $F failed"
             ;;
         js | html | css | md | jsx )
             echo "Running prettier on $F"
-            chronic prettier --write "$F"
+            chronic prettier --write "$F" || echo "prettier $F failed"
             ;;
         *)
             true
