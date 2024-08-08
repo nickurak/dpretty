@@ -87,6 +87,9 @@ fix_file() {
         done
         return
     fi
+    if ! [ -f "$F" ]; then
+        return
+    fi
     BASE="$(basename "$F")"
     if echo "$BASE" | grep -F . &>/dev/null; then
         SUFFIX="${BASE/#*./}"
