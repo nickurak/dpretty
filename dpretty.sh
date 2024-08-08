@@ -99,7 +99,7 @@ fix_file() {
     case "$SUFFIX" in
         sh)
             echo "Running beautysh on $F"
-            beautysh "$F"
+            chronic beautysh "$F"
             ;;
         py)
             echo "Running black on $F"
