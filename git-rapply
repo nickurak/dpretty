@@ -158,7 +158,7 @@ get_patch() {
 # Iterate over all the commits in our range, in the order they are in
 # the commit tree
 for SHA in "${COMMITS[@]}"; do
-    echo "Recreating $SHA:"
+    echo "Recreating $(git log -1 --pretty="%h: %s" "$SHA")):"
 
     # Restore the content that was in this commit
     reset_working_tree "$SHA"
@@ -174,7 +174,7 @@ for SHA in "${COMMITS[@]}"; do
     git commit -C"$SHA" > /dev/null || true
     if [ "$(get_patch $SHA)" = "$(get_patch HEAD)" ]; then
         if [ "$(get_parents $SHA)" = "$(get_parents HEAD)" ]; then
-            echo "Commit \"$SHA\" required no changes, and its parent(s) matched, no need to recreate at all."
+            echo "Commit \"$(git log -1 --pretty="%h" "$SHA")\" required no changes, and its parent(s) matched, no need to recreate at all."
             git reset "$SHA"
         fi
     fi
