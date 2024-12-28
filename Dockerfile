@@ -1,4 +1,4 @@
-FROM fedora-minimal:40
+FROM fedora-minimal:41
 
 RUN microdnf -y install nodejs python3-pip yarn python3 git bash findutils moreutils python3-setuptools perltidy
 
