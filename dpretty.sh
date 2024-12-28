@@ -76,6 +76,9 @@ guess_suffix() {
         python*)
             echo py
             ;;
+        perl*)
+            echo pl
+            ;;
     esac
 }
 
@@ -104,6 +107,16 @@ fix_file() {
         py)
             echo "Running black on $F"
             chronic black "$F" || echo "black $F failed"
+            ;;
+        pl)
+            PTBAK="${F}.bak"
+            if [ -e "$PTBAK" ]; then
+                echo "Can't tidy $F because $PTBAK exists"
+                return
+            fi
+            echo "Running perltidy on $F"
+            perltidy -b "$F" || echo "perltidy $F failed"
+            rm -f "$PTBAK"
             ;;
         js | html | css | md | jsx )
             echo "Running prettier on $F"

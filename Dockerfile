@@ -1,6 +1,6 @@
 FROM fedora-minimal:40
 
-RUN microdnf -y install nodejs python3-pip yarn python3 git bash findutils moreutils python3-setuptools
+RUN microdnf -y install nodejs python3-pip yarn python3 git bash findutils moreutils python3-setuptools perltidy
 
 RUN yarn global add prettier
 RUN pip3 install --break-system-packages black
