@@ -105,8 +105,8 @@ fix_file() {
     fi
     case "$SUFFIX" in
         sh)
-            echo "Running beautysh on $F"
-            chronic beautysh "$F" || echo "beautysh $F failed"
+            echo "Running shfmt on $F"
+            chronic shfmt -l -w -i 4 -ci -sr "$F" || echo "shfmt -l -w $F failed"
             ;;
         py)
             echo "Running black on $F"
