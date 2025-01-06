@@ -21,7 +21,7 @@ unset GITDIR
 unset GITRANGE
 
 help() {
-    cat <<EOH
+    cat << EOH
 Usage:
 
 -r <range>:     Operate on the given range of git commits.
@@ -47,16 +47,19 @@ while getopts :g:r:h OPT; do
             exit
             ;;
         *)
-            echo "Invalid option: $OPTARG" >/dev/stderr
+            echo "Invalid option: $OPTARG" > /dev/stderr
             exit 1
+            ;;
     esac
 done
-shift "$(expr "$OPTIND" - 1 )"
+shift "$(expr "$OPTIND" - 1)"
 
 fix_range() {
-    local GITDIR="$1"; shift
-    local GITRANGE="$1"; shift
-    pushd "$GITDIR" &>/dev/null
+    local GITDIR="$1"
+    shift
+    local GITRANGE="$1"
+    shift
+    pushd "$GITDIR" &> /dev/null
     export GIT_RAPPLY_TEMP_LABEL="dpretty"
     git-rapply "$SCRIPT" "$GITRANGE"
     popd &> /dev/null
@@ -64,7 +67,7 @@ fix_range() {
 
 guess_suffix() {
     HEAD="$(head -n 1 "$1")"
-    if ! echo "$HEAD" | grep '^#!' &>/dev/null; then
+    if ! echo "$HEAD" | grep '^#!' &> /dev/null; then
         return 0
     fi
     HEAD="$(echo "$HEAD" | sed 's%^#!/usr/bin/env %%')"
@@ -83,7 +86,8 @@ guess_suffix() {
 }
 
 fix_file() {
-    local F="$1"; shift
+    local F="$1"
+    shift
     if [ -d "$F" ]; then
         git ls-files "$F" | while IFS='' read F; do
             fix_file "$F"
@@ -94,7 +98,7 @@ fix_file() {
         return
     fi
     BASE="$(basename "$F")"
-    if echo "$BASE" | grep -F . &>/dev/null; then
+    if echo "$BASE" | grep -F . &> /dev/null; then
         SUFFIX="${BASE/#*./}"
     else
         SUFFIX=$(guess_suffix "$F")
@@ -118,7 +122,7 @@ fix_file() {
             perltidy -b "$F" || echo "perltidy $F failed"
             rm -f "$PTBAK"
             ;;
-        js | html | css | md | jsx )
+        js | html | css | md | jsx)
             echo "Running prettier on $F"
             chronic prettier --write "$F" || echo "prettier $F failed"
             ;;
