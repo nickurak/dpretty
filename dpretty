@@ -4,11 +4,7 @@ set -e
 
 IMAGE=dpretty
 
-if [ -d "$1" ]; then
-    INPUT_SRC="$(cd "$1"; pwd)"
-else
-    INPUT_SRC="$(pwd)"
-fi
+INPUT_SRC="$(pwd)"
 
 SELINUXOPT=""
 [ -x "$(which getenforce)" ] && [ "$(getenforce)" = "Enforcing" ] && SELINUXOPT=":z"
