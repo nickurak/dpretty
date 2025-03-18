@@ -60,10 +60,10 @@ trap "recover" SIGINT SIGTERM ERR
 RANGE="@{upstream}..$END"
 
 if [ -n "$1" ]; then
-    if echo "$1" | grep -E '[.][.].' &>/dev/null ; then
+    if echo "$1" | grep -E '[.][.].' &> /dev/null; then
         echo "Full range provided: \"$1\""
         RANGE="$1"
-    elif echo "$1" | grep -E '[.][.]' &>/dev/null ; then
+    elif echo "$1" | grep -E '[.][.]' &> /dev/null; then
         echo "Partial range provided: \"$1\""
         RANGE="${1}${END}"
     else
@@ -88,18 +88,17 @@ get_touched_files() {
 FILES="$(get_touched_files)"
 
 # Move our git repository to just before the selected range.
-START="${RANGE/%..*}"
-END="${RANGE/#*..}"
+START="${RANGE/%..*/}"
+END="${RANGE/#*../}"
 START="$(git merge-base -a ${START} ${END})"
 
 mapfile -t COMMITS < <(git log --topo-order --reverse --pretty=%H "$RANGE")
 WORKTREE="$(mktemp -d -t "$GIT_RAPPLY_TEMP_LABEL-tmp-XXXXX")"
 git worktree add "$WORKTREE" &> /dev/null
-pushd "$WORKTREE" &>/dev/null
+pushd "$WORKTREE" &> /dev/null
 TMPBRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 git reset --hard "$START" > /dev/null
-
 
 # Appyly command to each modified file (if it exists)
 filterfiles() {
@@ -124,10 +123,10 @@ filterfiles | sed 's/^/> /'
 
 if ! git_is_clean; then
     git add -A -f .
-    git commit -F- <<EOCOMMITMESSAGE || true
+    git commit -F- << EOCOMMITMESSAGE || true
 Auto-applying ${COMMAND} to these files first, to make subsequent commits easier to read:
 
-$(git diff --cached  --name-only)
+$(git diff --cached --name-only)
 EOCOMMITMESSAGE
 else
     echo "Initial state is clean -- no changes required"
@@ -145,15 +144,16 @@ reset_working_tree() {
 }
 
 get_parents() {
-    local SHA="$1"; shift
+    local SHA="$1"
+    shift
     git show -s --pretty=%P "$SHA"
 }
 
 get_patch() {
-    local SHA="$1"; shift
+    local SHA="$1"
+    shift
     git format-patch -1 "$SHA" --stdout | tail -n +2
 }
-
 
 # Iterate over all the commits in our range, in the order they are in
 # the commit tree
@@ -210,7 +210,7 @@ if ! git_is_clean; then
     echo
     cleanup_worktree
 else
-    popd &>/dev/null
+    popd &> /dev/null
     git reset --hard "$DONESHA" &> /dev/null
     if [ "$DONESHA" = "$END" ]; then
         echo "No changes made!"
