@@ -185,7 +185,8 @@ done
 # there is any missing content.
 
 reset_working_tree "$END"
-filterfiles
+echo "Validating that no changes were missed"
+filterfiles | sed 's/^/> /'
 
 DONESHA="$(git log -1 --pretty=%H)"
 
