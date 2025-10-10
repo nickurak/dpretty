@@ -6,6 +6,11 @@ IMAGE=dpretty
 
 INPUT_SRC="$(pwd)"
 
+SKIP_BUILD=''
+if [ "$1" == "-n" ]; then
+    SKIP_BUILD=1 && shift
+fi
+
 SELINUXOPT=""
 [ -x "$(which getenforce)" ] && [ "$(getenforce)" = "Enforcing" ] && SELINUXOPT=":z"
 ENGINE_OPTS=("--rm" "-v" "${INPUT_SRC}:/input_src${SELINUXOPT}" "-i")
@@ -25,9 +30,11 @@ else
     echo "Podman (recommended) or docker must be installed"
 fi
 
-if ! hide-short-output -t 4 $ENGINE build . -t $IMAGE; then
-    echo "'$ENGINE build -t .' failed"
-    exit 1
+if [ -z "$SKIP_BUILD" ]; then
+    if ! hide-short-output -t 4 $ENGINE build . -t $IMAGE; then
+        echo "'$ENGINE build -t .' failed"
+        exit 1
+    fi
 fi
 
 "$ENGINE" run "${ENGINE_OPTS[@]}" "$IMAGE" dpretty.sh "$@"
