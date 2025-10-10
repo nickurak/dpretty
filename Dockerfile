@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:42
+FROM registry.fedoraproject.org/fedora-minimal:43
 
 RUN microdnf -y install nodejs python3-pip yarn python3 git bash findutils moreutils python3-setuptools perltidy golang-bin
 
