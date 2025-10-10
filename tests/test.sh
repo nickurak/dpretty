@@ -2,7 +2,7 @@
 
 set -e
 set -o errtrace
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 cd "$SCRIPTDIR"
 
 TEST_ROOT="$(mktemp -d)"
@@ -27,7 +27,7 @@ trap "error" SIGINT SIGTERM ERR
 FAILURES=()
 fail() {
     local MSG="$@"
-    FAILURES+=( "$MSG" )
+    FAILURES+=("$MSG")
 }
 
 run_test() {
@@ -39,13 +39,13 @@ run_test() {
     local DIFF="$TEST_ROOT/${1}/diff"
     mkdir -p "$TEST_GIT_DIR"
     cd "$TEST_GIT_DIR"
-    git init >>"$LOG" 2>&1
-    git commit --allow-empty -m "init" >>"$LOG" 2>&1
+    git init >> "$LOG" 2>&1
+    git commit --allow-empty -m "init" >> "$LOG" 2>&1
     INITIAL_COMMIT="$(git log -1 --pretty=%H)"
     [ -z "$FIRST_COMMIT" ] && FIRST_COMMIT="$INITIAL_COMMIT"
-    cat "$INPUT" | git am - >>"$LOG" 2>&1
+    cat "$INPUT" | git am - >> "$LOG" 2>&1
     git log --reverse -p --topo-order > "$INPUT-log"
-    "${SCRIPTDIR}/../dpretty" -r "$FIRST_COMMIT.." >>"$LOG" 2>&1
+    "${SCRIPTDIR}/../dpretty" -r "$FIRST_COMMIT.." >> "$LOG" 2>&1
     git log --reverse -p --topo-order > "$OUTPUT"
     local BLURRED='/^(commit |Date: )/d'
     if ! diff -u <(sed -E "$BLURRED" "$OUTPUT") <(sed -E "$BLURRED" "$EXPECTED") > "$DIFF"; then

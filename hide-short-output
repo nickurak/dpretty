@@ -24,11 +24,13 @@ while getopts :t: OPT; do
             ;;
     esac
 done
-shift $(expr $OPTIND - 1 )
+shift $(expr $OPTIND - 1)
 
 monitor_for_exit() {
-    local FLAGFILE="$1"; shift
-    local OUTFILE="$1"; shift
+    local FLAGFILE="$1"
+    shift
+    local OUTFILE="$1"
+    shift
 
     if "$@" &> "$OUTFILE"; then
         echo "0" > "$RCFILE"
@@ -40,7 +42,7 @@ monitor_for_exit() {
 
 monitor_for_exit "$FLAGFILE" "$OUTFILE" "$@" &
 
-ENDTIME=$[$(date +%s) + $TIMEOUT]
+ENDTIME=$(($(date +%s) + $TIMEOUT))
 while [ -e $FLAGFILE -a $(date +%s) -lt $ENDTIME ]; do
     sleep 0.25
 done
