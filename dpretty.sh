@@ -109,8 +109,9 @@ fix_file() {
             chronic shfmt -l -w -i 4 -ci -sr "$F" || echo "shfmt -l -w $F failed"
             ;;
         py)
-            echo "Running black on $F"
-            chronic black "$F" || echo "black $F failed"
+            echo "Running ruff format on $F"
+            export RUFF_CACHE_DIR=/tmp/dpretty_ruff_cache
+            chronic ruff format "$F" || echo "ruff format $F failed"
             ;;
         pl)
             PTBAK="${F}.bak"
