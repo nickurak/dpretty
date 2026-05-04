@@ -117,6 +117,11 @@ fix_file() {
                     echo "Running black on $F"
                     chronic black "$F" || echo "black $F failed"
                     ;;
+                ruff)
+                    echo "Running ruff format on $F"
+                    export RUFF_CACHE_DIR=/tmp/dpretty_ruff_cache
+                    chronic ruff format "$F" || echo "ruff format $F failed"
+                    ;;
                 *)
                     echo "Unknown PYTHON_FORMATTER value \"$PYTHON_FORMATTER\""
                     ;;
