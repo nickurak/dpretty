@@ -52,7 +52,12 @@ Likewise, workflows that introduce formatting issues, only to remove them in a l
 
 In either case, commits having a mixture of functional and non-functional changes makes them harder to understand, and harder to review.
 
-Dpretty relies on other code-formatting tools to do its job. Right now it's rigged to use the `black` formatter for python code, and the `prettier` formatter for various web-facing files (HTML, JS, JSX/React, Markdown JSON). It's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
+Dpretty relies on other code-formatting tools to do its job. Right now it uses:]
+
+- `black` for python code
+- the `prettier` formatter for various web-facing files (HTML, JS, JSX/React, Markdown JSON).
+- `shfmt` for shell code
+- `perltidy` for perl code
 
 It's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
 
