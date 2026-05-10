@@ -1,5 +1,7 @@
 FROM registry.fedoraproject.org/fedora-minimal:44
 
+RUN echo tsflags=nodocs >> /etc/dnf/dnf.conf
+
 RUN microdnf -y install nodejs python3-pip yarn python3 git bash findutils moreutils python3-setuptools perltidy golang-bin
 
 RUN GOBIN=/usr/local/bin go install mvdan.cc/sh/v3/cmd/shfmt@latest
