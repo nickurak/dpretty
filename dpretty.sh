@@ -89,8 +89,8 @@ fix_file() {
     local F="$1"
     shift
     if [ -d "$F" ]; then
-        git ls-files "$F" | while IFS='' read F; do
-            fix_file "$F"
+        git ls-files "$F" | while IFS='' read -r INNER_FILE; do
+            fix_file "$INNER_FILE"
         done
         return
     fi
