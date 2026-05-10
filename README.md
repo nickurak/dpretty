@@ -59,6 +59,6 @@ Dpretty relies on other code-formatting tools to do its job. Right now it uses:]
 - `shfmt` for shell code
 - `perltidy` for perl code
 
-Beyond selecting a python formatter, it's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
+Beyond selecting a python formatter, it's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`. Those third-party formatters can read and use options found in your repository's committed configuration files though.
 
 (If you're wondering about the name: Right now, the `d` is for `docker`, because part the goal here is to make this work without you needing to install much software via pip, npm, etc).
