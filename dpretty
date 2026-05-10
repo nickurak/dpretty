@@ -7,9 +7,31 @@ IMAGE=dpretty
 INPUT_SRC="$(pwd)"
 
 SKIP_BUILD=''
-if [ "$1" == "-n" ]; then
-    SKIP_BUILD=1 && shift
-fi
+COMMAND=dpretty.sh
+
+EXTRA_ARGS=()
+
+while getopts :nr:g:e: OPT; do
+    case $OPT in
+        n)
+            SKIP_BUILD=true
+            ;;
+        r)
+            EXTRA_ARGS+=(-r "$OPTARG")
+            ;;
+        g)
+            EXTRA_ARGS+=(-g "$OPTARG")
+            ;;
+        e)
+            COMMAND="$OPTARG"
+            ;;
+        *)
+            echo "Invalid option: -$OPTARG"
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
 
 SELINUXOPT=""
 [ -x "$(which getenforce)" ] && [ "$(getenforce)" = "Enforcing" ] && SELINUXOPT=":z"
@@ -37,4 +59,4 @@ if [ -z "$SKIP_BUILD" ]; then
     fi
 fi
 
-"$ENGINE" run "${ENGINE_OPTS[@]}" "$IMAGE" dpretty.sh "$@"
+"$ENGINE" run "${ENGINE_OPTS[@]}" "$IMAGE" "$COMMAND" "${EXTRA_ARGS[@]}" "$@"
