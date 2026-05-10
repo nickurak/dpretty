@@ -54,4 +54,6 @@ In either case, commits having a mixture of functional and non-functional change
 
 Dpretty relies on other code-formatting tools to do its job. Right now it's rigged to use the `black` formatter for python code, and the `prettier` formatter for various web-facing files (HTML, JS, JSX/React, Markdown JSON). It's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
 
-(If you're wondering about the name: Right now, the `d' is for`docker`, because part the goal here is to make this work without you needing to install much software via pip, npm, etc).
+It's not exactly configurable in this regard, but you can see and edit the logic in `dpretty.sh`.
+
+(If you're wondering about the name: Right now, the `d` is for `docker`, because part the goal here is to make this work without you needing to install much software via pip, npm, etc).
