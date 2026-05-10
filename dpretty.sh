@@ -2,6 +2,7 @@
 
 SCRIPT="$(readlink -fn "$0")"
 BASESCRIPT="$(basename "$SCRIPT")"
+PYTHON_FORMATTER=black
 
 if [ "$(command -v "$BASESCRIPT")" != "$SCRIPT" ]; then
     echo "\"$BASESCRIPT\" does not resolve to \"$SCRIPT\", exiting"
@@ -53,6 +54,8 @@ while getopts :g:r:h OPT; do
     esac
 done
 shift "$(expr "$OPTIND" - 1)"
+
+[ -f .dprettyrc ] && . .dprettyrc
 
 fix_range() {
     local GITDIR="$1"
@@ -109,8 +112,15 @@ fix_file() {
             chronic shfmt -l -w -i 4 -ci -sr "$F" || echo "shfmt -l -w $F failed"
             ;;
         py)
-            echo "Running black on $F"
-            chronic black "$F" || echo "black $F failed"
+            case "$PYTHON_FORMATTER" in
+                black)
+                    echo "Running black on $F"
+                    chronic black "$F" || echo "black $F failed"
+                    ;;
+                *)
+                    echo "Unknown PYTHON_FORMATTER value \"$PYTHON_FORMATTER\""
+                    ;;
+            esac
             ;;
         pl)
             PTBAK="$(mktemp -p . "${F}.XXXX")"
