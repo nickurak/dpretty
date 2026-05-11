@@ -3,6 +3,8 @@
 SCRIPT="$(readlink -fn "$0")"
 BASESCRIPT="$(basename "$SCRIPT")"
 PYTHON_FORMATTER=black
+RUFF_IMPORT_SORT=''
+RUFF_LINT_FIX=''
 
 if [ "$(command -v "$BASESCRIPT")" != "$SCRIPT" ]; then
     echo "\"$BASESCRIPT\" does not resolve to \"$SCRIPT\", exiting"
@@ -126,6 +128,14 @@ fix_file() {
                     echo "Unknown PYTHON_FORMATTER value \"$PYTHON_FORMATTER\""
                     ;;
             esac
+            if [ -n "$RUFF_IMPORT_SORT" ]; then
+                echo "Running ruff import sorter on $F"
+                chronic ruff check --select I --fix "$F"
+            fi
+            if [ -n "$RUFF_LINT_FIX" ]; then
+                echo "Running ruff lint fix on $F"
+                chronic ruff check --fix "$F"
+            fi
             ;;
         pl)
             PTBAK="$(mktemp -p . "${F}.XXXX")"
